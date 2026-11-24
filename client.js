@@ -27,30 +27,18 @@ window.__ModuleLoader__.load({
 
     const STRINGS = {
       zh: {
-        diagram: '图表',
-        source: '源码',
-        copy: '复制',
-        copied: '已复制',
         preview: '预览',
-        close: '关闭',
         zoomIn: '放大',
         zoomOut: '缩小',
         reset: '重置',
-        hint: '滚轮缩放 · 拖动平移 · Esc 关闭',
         loading: '正在渲染图表…',
         error: '图表渲染失败',
       },
       en: {
-        diagram: 'Diagram',
-        source: 'Source',
-        copy: 'Copy',
-        copied: 'Copied',
         preview: 'Preview',
-        close: 'Close',
         zoomIn: 'Zoom in',
         zoomOut: 'Zoom out',
         reset: 'Reset',
-        hint: 'Wheel to zoom · drag to pan · Esc to close',
         loading: 'Rendering diagram…',
         error: 'Diagram failed to render',
       },
@@ -67,27 +55,22 @@ window.__ModuleLoader__.load({
       '.dshc-embed-failed{cursor:default;margin:8px 0;padding:10px 12px;border:1px solid var(--dsw-alias-border-l1,rgba(128,128,128,.28));border-radius:10px;background:var(--dsw-alias-bg-layer-1,rgba(128,128,128,.06))}',
       '.dshc-error{margin:0 0 8px;font-size:12px;color:var(--dsw-alias-state-error-primary,#e5484d);word-break:break-word}',
       '.dshc-code{margin:0;padding:10px 0 0;overflow:auto;max-height:50vh;font-size:12px;line-height:1.55;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre;tab-size:2}',
-      '.dshc-lb{position:fixed;inset:0;z-index:2147483000;background:rgba(0,0,0,.82);backdrop-filter:blur(4px);animation:dshc-fade .16s ease-out;overscroll-behavior:contain;outline:none}',
-      '.dshc-lb-top{position:absolute;top:0;left:0;right:0;z-index:3;display:flex;align-items:center;gap:10px;padding:14px 18px;color:#cfd6df;background:linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,0));pointer-events:auto}',
-      '.dshc-lb-title{font-weight:600;color:#f2f5f8;letter-spacing:.02em;font-size:13px}',
-      '.dshc-lb-meta{max-width:34%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;opacity:.65;font-size:12px}',
-      '.dshc-lb-hint{margin-left:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;opacity:.45;font-size:12px}',
-      '.dshc-lb-actions{margin-left:auto;display:flex;align-items:center;gap:4px;pointer-events:auto}',
-      '.dshc-lb-btn{border:0;background:transparent;color:inherit;font:inherit;font-size:12px;cursor:pointer;padding:5px 10px;border-radius:8px;white-space:nowrap}',
-      '.dshc-lb-btn:hover{background:rgba(255,255,255,.12);color:#fff}',
-      '.dshc-lb-btn:focus-visible{outline:2px solid #7cb2ff;outline-offset:1px}',
-      '.dshc-lb-btn:focus:not(:focus-visible){outline:none}',
-      '.dshc-lb-close{font-size:20px;line-height:1;padding:2px 10px 5px}',
-      '.dshc-lb-stage{position:absolute;inset:0;z-index:1;overflow:auto;display:flex;padding:70px 28px 100px;overscroll-behavior:contain}',
+      '.dshc-lb{position:fixed;inset:0;z-index:2147483000;background:rgba(255,255,255,.94);backdrop-filter:blur(6px);animation:dshc-fade .16s ease-out;overscroll-behavior:contain;outline:none;cursor:zoom-out}',
+      'body[data-ds-dark-theme] .dshc-lb{background:rgba(0,0,0,.84)}',
+      '.dshc-lb-stage{position:absolute;inset:0;z-index:1;overflow:auto;display:flex;padding:64px 24px 96px;overscroll-behavior:contain;cursor:zoom-out}',
       '.dshc-lb-stage.dshc-dragging{cursor:grabbing;user-select:none}',
       '.dshc-lb-zoom{margin:auto;display:block;width:100%;text-align:center;pointer-events:none}',
-      '.dshc-lb-zoom svg{display:inline-block;max-width:100%;height:auto;pointer-events:auto;cursor:grab}',
-      '.dshc-lb-zoom-bar{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);z-index:3;display:flex;align-items:center;gap:2px;padding:4px 6px;border-radius:999px;background:rgba(24,28,34,.88);color:#e8edf3;box-shadow:0 10px 36px rgba(0,0,0,.5);backdrop-filter:blur(10px)}',
-      '.dshc-lb-zoomlabel{min-width:50px;text-align:center;font-size:12px;font-variant-numeric:tabular-nums;opacity:.85}',
-      '.dshc-lb-source{position:absolute;top:62px;right:22px;bottom:22px;left:22px;z-index:2;overflow:auto;display:flex;justify-content:center;padding:6px 0 16px}',
-      '.dshc-lb-source pre{width:min(1000px,100%);margin:0;padding:18px;border-radius:12px;background:rgba(14,16,20,.86);color:#e6edf3;font-size:12px;line-height:1.6;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre;tab-size:2}',
+      '.dshc-lb-zoom svg{display:inline-block;max-width:100%;height:auto;pointer-events:auto;cursor:zoom-out}',
+      '.dshc-lb-zoom-bar{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);z-index:3;display:flex;align-items:center;gap:2px;padding:4px 6px;border-radius:999px;background:rgba(255,255,255,.92);color:#1f2328;box-shadow:0 10px 36px rgba(0,0,0,.18);backdrop-filter:blur(10px);cursor:default}',
+      'body[data-ds-dark-theme] .dshc-lb-zoom-bar{background:rgba(24,28,34,.9);color:#e8edf3;box-shadow:0 10px 36px rgba(0,0,0,.5)}',
+      '.dshc-lb-btn{border:0;background:transparent;color:inherit;font:inherit;font-size:12px;cursor:pointer;padding:5px 10px;border-radius:8px;white-space:nowrap}',
+      '.dshc-lb-btn:hover{background:rgba(0,0,0,.07)}',
+      'body[data-ds-dark-theme] .dshc-lb-btn:hover{background:rgba(255,255,255,.12)}',
+      '.dshc-lb-btn:focus-visible{outline:2px solid #7cb2ff;outline-offset:1px}',
+      '.dshc-lb-btn:focus:not(:focus-visible){outline:none}',
+      '.dshc-lb-zoomlabel{min-width:50px;text-align:center;font-size:12px;font-variant-numeric:tabular-nums;opacity:.8}',
       '@keyframes dshc-fade{from{opacity:0}to{opacity:1}}',
-      '@media (max-width:720px){.dshc-lb-hint{display:none}.dshc-lb-stage{padding:64px 12px 92px}.dshc-lb-source{top:56px;right:10px;left:10px}}',
+      '@media (max-width:720px){.dshc-lb-stage{padding:56px 10px 88px}}',
     ].join('\n')
 
     let renderSeq = 0
@@ -273,40 +256,15 @@ window.__ModuleLoader__.load({
       return () => { style.remove() }
     }
 
-    function copyText(text, done) {
-      const fallback = () => {
-        try {
-          const area = document.createElement('textarea')
-          area.value = text
-          area.setAttribute('readonly', '')
-          area.style.position = 'fixed'
-          area.style.opacity = '0'
-          document.body.appendChild(area)
-          area.select()
-          document.execCommand('copy')
-          document.body.removeChild(area)
-        } catch (error) { /* clipboard unavailable */ }
-        done()
-      }
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text).then(done, fallback)
-      } else {
-        fallback()
-      }
-    }
-
     function PreviewOverlay(props) {
       const t = props.t
       const [zoom, setZoom] = React.useState(1)
       const [dragging, setDragging] = React.useState(false)
-      const [showSource, setShowSource] = React.useState(false)
-      const [copied, setCopied] = React.useState(false)
       const overlayRef = React.useRef(null)
       const stageRef = React.useRef(null)
-      const dragRef = React.useRef(null)
-      const copyTimer = React.useRef(0)
+      const startRef = React.useRef(null)
+      const movedRef = React.useRef(false)
 
-      React.useEffect(() => () => { if (copyTimer.current) window.clearTimeout(copyTimer.current) }, [])
       React.useEffect(() => {
         const previous = document.body.style.overflow
         document.body.style.overflow = 'hidden'
@@ -330,11 +288,7 @@ window.__ModuleLoader__.load({
             return Math.round(Math.min(5, Math.max(0.5, next)) * 100) / 100
           })
         }
-        const holdBackground = (event) => {
-          const target = event.target
-          if (target !== null && typeof target.closest === 'function' && target.closest('.dshc-lb-source') !== null) return
-          event.preventDefault()
-        }
+        const holdBackground = (event) => { event.preventDefault() }
         stage.addEventListener('wheel', zoomByWheel, { passive: false })
         overlay.addEventListener('wheel', holdBackground, { passive: false })
         return () => {
@@ -344,39 +298,44 @@ window.__ModuleLoader__.load({
       }, [])
 
       const onPointerDown = (event) => {
-        if (event.target === event.currentTarget) { props.onClose(); return }
         if (event.pointerType !== 'mouse' || event.button !== 0) return
         const stage = stageRef.current
         if (stage === null) return
-        dragRef.current = { x: event.clientX, y: event.clientY, left: stage.scrollLeft, top: stage.scrollTop }
-        setDragging(true)
-        try { stage.setPointerCapture(event.pointerId) } catch (error) { /* capture unavailable */ }
+        startRef.current = { x: event.clientX, y: event.clientY, left: stage.scrollLeft, top: stage.scrollTop }
+        movedRef.current = false
       }
       const onPointerMove = (event) => {
-        const drag = dragRef.current
+        const start = startRef.current
         const stage = stageRef.current
-        if (drag === null || stage === null) return
-        stage.scrollLeft = drag.left - (event.clientX - drag.x)
-        stage.scrollTop = drag.top - (event.clientY - drag.y)
+        if (start === null || stage === null) return
+        const dx = event.clientX - start.x
+        const dy = event.clientY - start.y
+        if (!movedRef.current && Math.abs(dx) + Math.abs(dy) > 4) {
+          movedRef.current = true
+          setDragging(true)
+          try { stage.setPointerCapture(event.pointerId) } catch (error) { /* capture unavailable */ }
+        }
+        if (movedRef.current) {
+          stage.scrollLeft = start.left - dx
+          stage.scrollTop = start.top - dy
+        }
       }
       const endDrag = (event) => {
-        dragRef.current = null
+        startRef.current = null
         setDragging(false)
         const stage = stageRef.current
         if (stage === null) return
         try { stage.releasePointerCapture(event.pointerId) } catch (error) { /* capture unavailable */ }
       }
+      const onOverlayClick = (event) => {
+        const target = event.target
+        if (target !== null && typeof target.closest === 'function' && target.closest('.dshc-lb-zoom-bar') !== null) return
+        if (movedRef.current) { movedRef.current = false; return }
+        props.onClose()
+      }
       const changeZoom = (delta) => {
         setZoom((value) => Math.round(Math.min(5, Math.max(0.5, value + delta)) * 100) / 100)
       }
-      const onCopy = () => {
-        copyText(props.code, () => {
-          setCopied(true)
-          if (copyTimer.current) window.clearTimeout(copyTimer.current)
-          copyTimer.current = window.setTimeout(() => { setCopied(false) }, 1400)
-        })
-      }
-      const label = props.lang === 'svg' ? 'SVG' : 'Mermaid'
       return ReactDOM.createPortal(
         h('div', {
           className: 'dshc-lb',
@@ -385,44 +344,24 @@ window.__ModuleLoader__.load({
           'aria-modal': 'true',
           'aria-label': t.preview,
           tabIndex: -1,
-          onPointerDown: (event) => { if (event.target === event.currentTarget) props.onClose() },
+          onClick: onOverlayClick,
         },
-          h('div', { className: 'dshc-lb-top' },
-            h('span', { className: 'dshc-lb-title' }, label),
-            props.meta ? h('span', { className: 'dshc-lb-meta', title: props.meta }, props.meta) : null,
-            h('span', { className: 'dshc-lb-hint' }, t.hint),
-            h('div', { className: 'dshc-lb-actions' },
-              h('button', {
-                type: 'button', className: 'dshc-lb-btn', 'aria-pressed': showSource ? 'true' : 'false',
-                onClick: () => { setShowSource((value) => !value) },
-              }, showSource ? t.diagram : t.source),
-              h('button', { type: 'button', className: 'dshc-lb-btn', onClick: onCopy }, copied ? t.copied : t.copy),
-              h('button', {
-                type: 'button', className: 'dshc-lb-btn dshc-lb-close',
-                onClick: props.onClose, 'aria-label': t.close, title: t.close,
-              }, '×'),
-            ),
+          h('div', {
+            className: 'dshc-lb-stage' + (dragging ? ' dshc-dragging' : ''),
+            ref: stageRef,
+            onPointerDown,
+            onPointerMove,
+            onPointerUp: endDrag,
+            onPointerCancel: endDrag,
+            onDragStart: (event) => { event.preventDefault() },
+          },
+            h('div', {
+              className: 'dshc-lb-zoom',
+              style: { zoom: String(zoom) },
+              dangerouslySetInnerHTML: { __html: props.svg },
+            }),
           ),
-          showSource
-            ? h('div', { className: 'dshc-lb-source' },
-                h('pre', null, h('code', null, props.code)),
-              )
-            : h('div', {
-                className: 'dshc-lb-stage' + (dragging ? ' dshc-dragging' : ''),
-                ref: stageRef,
-                onPointerDown,
-                onPointerMove,
-                onPointerUp: endDrag,
-                onPointerCancel: endDrag,
-                onDragStart: (event) => { event.preventDefault() },
-              },
-                h('div', {
-                  className: 'dshc-lb-zoom',
-                  style: { zoom: String(zoom) },
-                  dangerouslySetInnerHTML: { __html: props.svg },
-                }),
-              ),
-          showSource ? null : h('div', { className: 'dshc-lb-zoom-bar' },
+          h('div', { className: 'dshc-lb-zoom-bar', onClick: (event) => { event.stopPropagation() } },
             h('button', {
               type: 'button', className: 'dshc-lb-btn', 'aria-label': t.zoomOut, title: t.zoomOut,
               onClick: () => { changeZoom(-0.25) },
@@ -448,7 +387,6 @@ window.__ModuleLoader__.load({
         if (node !== null) node.focus()
       }, [props.frameRef])
       const canPreview = Boolean(props.previewSvg)
-      const title = props.meta && props.meta.trim() !== '' ? props.meta.trim() : ''
       const open = () => { if (canPreview) setPreview(true) }
       const onKeyDown = (event) => {
         if (!canPreview) return
@@ -474,7 +412,7 @@ window.__ModuleLoader__.load({
             'data-dshc-lang': props.lang,
           }, props.children)
       return h(React.Fragment, null, body, preview && props.previewSvg
-        ? h(PreviewOverlay, { svg: props.previewSvg, code: props.code, lang: props.lang, meta: title, t, onClose: closePreview })
+        ? h(PreviewOverlay, { svg: props.previewSvg, t, onClose: closePreview })
         : null)
     }
 

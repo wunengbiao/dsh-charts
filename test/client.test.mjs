@@ -129,19 +129,8 @@ test('svg fence renders inline without a frame and opens preview on click', asyn
   assert.ok(overlay, 'clicking the diagram opens the overlay')
   assert.ok(overlay.querySelector('.dshc-lb-stage svg'), 'overlay contains the diagram')
 
-  const sourceButton = [...overlay.querySelectorAll('button')].find((button) => button.textContent === '源码')
-  assert.ok(sourceButton, 'source toggle exists in the overlay')
-  await act(async () => { click(sourceButton) })
-  assert.equal(overlay.querySelector('.dshc-lb-source pre').textContent, code)
-  assert.equal(overlay.querySelector('.dshc-lb-stage'), null)
-  const diagramButton = [...overlay.querySelectorAll('button')].find((button) => button.textContent === '图表')
-  await act(async () => { click(diagramButton) })
-  assert.ok(overlay.querySelector('.dshc-lb-stage svg'))
-
-  await act(async () => {
-    document.dispatchEvent(new dom.window.KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
-  })
-  assert.equal(document.querySelector('.dshc-lb'), null, 'Escape closes the overlay')
+  await act(async () => { click(overlay.querySelector('.dshc-lb-stage')) })
+  assert.equal(document.querySelector('.dshc-lb'), null, 'clicking the diagram closes the overlay')
   await act(async () => { root.unmount() })
   container.remove()
 })
