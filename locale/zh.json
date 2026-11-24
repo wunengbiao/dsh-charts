@@ -1,0 +1,7 @@
+{
+  "meta": {
+    "title": "会话内图表",
+    "description": "把 mermaid 与 svg 代码围栏直接渲染在会话消息里，不生成文件、不转 PNG。",
+    "detail": "README.md"
+  }
+}

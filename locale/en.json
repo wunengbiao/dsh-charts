@@ -1,0 +1,7 @@
+{
+  "meta": {
+    "title": "Inline diagrams",
+    "description": "Render mermaid and svg code fences directly inside conversation messages, without files or PNG conversion.",
+    "detail": "README.md"
+  }
+}

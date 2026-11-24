@@ -1,0 +1,11 @@
+# dsh-charts bundle layer: one host+client row.
+# The row config is validated by index.js; override it in your profile patch with
+# - id: dsh-charts
+#   config: { theme: dark }
+- insert:
+    - id: dsh-charts
+      name: 'dsh-charts'
+      config:
+        theme: auto
+        maxTextSize: 50000
+        maxEdges: 2000

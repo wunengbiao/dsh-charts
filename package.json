@@ -1,0 +1,74 @@
+{
+  "name": "dsh-charts",
+  "version": "0.1.0",
+  "description": "DSH 插件：在会话中把 mermaid 与 svg 代码围栏直接渲染成图表，不生成文件、不转 PNG。DeepSeek Harness plugin that renders mermaid and svg fences inline in Web conversations.",
+  "type": "module",
+  "main": "./index.js",
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "index.js",
+    "client.js",
+    "cordis.patch.yml",
+    "locale",
+    "icon.svg",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis",
+    "mermaid",
+    "svg",
+    "diagram",
+    "chart",
+    "inline"
+  ],
+  "author": "wunengbiao",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22",
+    "dsh": ">=0.2.2-rc.1"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true
+    }
+  },
+  "dependencies": {
+    "mermaid": "^11.17.2"
+  },
+  "devDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "jsdom": "^26.0.0"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "check": "node --check index.js && node --check client.js",
+    "prepublishOnly": "npm test"
+  },
+  "icon": "icon.svg",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wunengbiao/dsh-charts.git"
+  },
+  "homepage": "https://github.com/wunengbiao/dsh-charts#readme",
+  "bugs": {
+    "url": "https://github.com/wunengbiao/dsh-charts/issues"
+  }
+}
