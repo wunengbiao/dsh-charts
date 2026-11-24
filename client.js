@@ -14,6 +14,7 @@ window.__ModuleLoader__.load({
   factory(require) {
     'use strict'
     const React = require('react')
+    const ReactDOM = require('react-dom')
     const h = React.createElement
 
     const SLOT = 'conversation.chat.markdown.fence'
@@ -30,8 +31,12 @@ window.__ModuleLoader__.load({
         source: '源码',
         copy: '复制',
         copied: '已复制',
-        fullscreen: '全屏',
-        exitFullscreen: '退出全屏',
+        preview: '预览',
+        close: '关闭',
+        zoomIn: '放大',
+        zoomOut: '缩小',
+        reset: '重置',
+        hint: '滚轮缩放 · 拖动平移 · Esc 关闭',
         loading: '正在渲染图表…',
         error: '图表渲染失败',
       },
@@ -40,8 +45,12 @@ window.__ModuleLoader__.load({
         source: 'Source',
         copy: 'Copy',
         copied: 'Copied',
-        fullscreen: 'Fullscreen',
-        exitFullscreen: 'Exit fullscreen',
+        preview: 'Preview',
+        close: 'Close',
+        zoomIn: 'Zoom in',
+        zoomOut: 'Zoom out',
+        reset: 'Reset',
+        hint: 'Wheel to zoom · drag to pan · Esc to close',
         loading: 'Rendering diagram…',
         error: 'Diagram failed to render',
       },
@@ -66,10 +75,27 @@ window.__ModuleLoader__.load({
       '.dshc-error{margin:0;font-size:12px;color:var(--dsw-alias-state-error-primary,#e5484d);word-break:break-word}',
       '.dshc-body-source .dshc-error{padding:10px 12px 0}',
       '.dshc-code{margin:0;padding:10px 12px;overflow:auto;max-height:60vh;font-size:12px;line-height:1.55;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre;tab-size:2}',
-      '.dshc-frame:fullscreen{width:100vw;height:100vh;max-height:none;border-radius:0;background:var(--dsw-alias-bg-base,#111);margin:0}',
-      '.dshc-frame:fullscreen .dshc-body{flex:1 1 auto;max-height:none;display:flex;align-items:center;justify-content:center}',
-      '.dshc-frame:fullscreen .dshc-svg svg{max-height:calc(100vh - 84px)}',
-      '.dshc-frame:fullscreen .dshc-code{max-height:none;width:100%}',
+      '.dshc-btn:disabled{opacity:.4;cursor:default}',
+      '.dshc-lb{position:fixed;inset:0;z-index:2147483000;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(0,0,0,.74);backdrop-filter:blur(3px);animation:dshc-fade .16s ease-out;overscroll-behavior:contain}',
+      '.dshc-lb-panel{display:flex;flex-direction:column;width:min(1200px,94vw);max-height:90vh;border:1px solid var(--dsw-alias-border-l1,rgba(255,255,255,.16));border-radius:14px;background:var(--dsw-alias-bg-overlay,#1b1f27);box-shadow:0 24px 80px rgba(0,0,0,.55);overflow:hidden;animation:dshc-pop .18s ease-out}',
+      '.dshc-lb-head{display:flex;align-items:center;gap:8px;padding:9px 10px 9px 12px;font-size:12px;line-height:1.6;color:var(--dsw-alias-label-secondary,#9aa1ab);border-bottom:1px solid var(--dsw-alias-border-l1,rgba(128,128,128,.22));flex:none}',
+      '.dshc-lb-title{font-weight:600;color:var(--dsw-alias-label-primary,inherit);letter-spacing:.02em}',
+      '.dshc-lb-meta{max-width:30%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;opacity:.7}',
+      '.dshc-lb-hint{margin-left:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;opacity:.55}',
+      '.dshc-lb-actions{margin-left:auto;display:flex;align-items:center;gap:2px;flex:none}',
+      '.dshc-lb-btn{border:0;background:transparent;color:inherit;font:inherit;cursor:pointer;padding:3px 8px;border-radius:6px;white-space:nowrap}',
+      '.dshc-lb-btn:hover{background:var(--dsw-alias-bg-layer-2,rgba(128,128,128,.2));color:var(--dsw-alias-label-primary,inherit)}',
+      '.dshc-lb-btn:focus-visible{outline:2px solid var(--dsw-alias-brand-primary,#4c8dff);outline-offset:1px}',
+      '.dshc-lb-btn:focus:not(:focus-visible){outline:none}',
+      '.dshc-lb-zoomlabel{min-width:46px;text-align:center;font-variant-numeric:tabular-nums;opacity:.8}',
+      '.dshc-lb-close{font-size:18px;line-height:1;padding:2px 9px 4px}',
+      '.dshc-lb-stage{flex:1 1 auto;min-height:0;max-height:calc(90vh - 48px);overflow:auto;padding:22px;cursor:grab;overscroll-behavior:contain;background:var(--dsw-alias-bg-base,rgba(0,0,0,.18))}',
+      '.dshc-lb-stage.dshc-dragging{cursor:grabbing;user-select:none}',
+      '.dshc-lb-zoom{display:block;width:100%;text-align:center}',
+      '.dshc-lb-zoom svg{display:inline-block;max-width:100%;height:auto}',
+      '@keyframes dshc-fade{from{opacity:0}to{opacity:1}}',
+      '@keyframes dshc-pop{from{opacity:0;transform:scale(.985)}to{opacity:1;transform:none}}',
+      '@media (max-width:720px){.dshc-lb{padding:10px}.dshc-lb-panel{width:96vw}.dshc-lb-hint{display:none}}',
     ].join('\n')
 
     let renderSeq = 0
@@ -277,18 +303,138 @@ window.__ModuleLoader__.load({
       }
     }
 
+    function PreviewOverlay(props) {
+      const t = props.t
+      const [zoom, setZoom] = React.useState(1)
+      const [dragging, setDragging] = React.useState(false)
+      const overlayRef = React.useRef(null)
+      const stageRef = React.useRef(null)
+      const closeRef = React.useRef(null)
+      const dragRef = React.useRef(null)
+
+      React.useEffect(() => {
+        const previous = document.body.style.overflow
+        document.body.style.overflow = 'hidden'
+        const onKey = (event) => { if (event.key === 'Escape') props.onClose() }
+        document.addEventListener('keydown', onKey)
+        if (closeRef.current !== null) closeRef.current.focus()
+        return () => {
+          document.removeEventListener('keydown', onKey)
+          document.body.style.overflow = previous
+        }
+      }, [props.onClose])
+
+      React.useEffect(() => {
+        const overlay = overlayRef.current
+        const stage = stageRef.current
+        if (overlay === null || stage === null) return undefined
+        const zoomByWheel = (event) => {
+          event.preventDefault()
+          setZoom((value) => {
+            const next = value + (event.deltaY > 0 ? -0.15 : 0.15)
+            return Math.round(Math.min(5, Math.max(0.5, next)) * 100) / 100
+          })
+        }
+        const holdBackground = (event) => { event.preventDefault() }
+        stage.addEventListener('wheel', zoomByWheel, { passive: false })
+        overlay.addEventListener('wheel', holdBackground, { passive: false })
+        return () => {
+          stage.removeEventListener('wheel', zoomByWheel)
+          overlay.removeEventListener('wheel', holdBackground)
+        }
+      }, [])
+
+      const onPointerDown = (event) => {
+        if (event.pointerType !== 'mouse' || event.button !== 0) return
+        const stage = stageRef.current
+        if (stage === null) return
+        dragRef.current = { x: event.clientX, y: event.clientY, left: stage.scrollLeft, top: stage.scrollTop }
+        setDragging(true)
+        try { stage.setPointerCapture(event.pointerId) } catch (error) { /* capture unavailable */ }
+      }
+      const onPointerMove = (event) => {
+        const drag = dragRef.current
+        const stage = stageRef.current
+        if (drag === null || stage === null) return
+        stage.scrollLeft = drag.left - (event.clientX - drag.x)
+        stage.scrollTop = drag.top - (event.clientY - drag.y)
+      }
+      const endDrag = (event) => {
+        dragRef.current = null
+        setDragging(false)
+        const stage = stageRef.current
+        if (stage === null) return
+        try { stage.releasePointerCapture(event.pointerId) } catch (error) { /* capture unavailable */ }
+      }
+      const changeZoom = (delta) => {
+        setZoom((value) => Math.round(Math.min(5, Math.max(0.5, value + delta)) * 100) / 100)
+      }
+      const label = props.lang === 'svg' ? 'SVG' : 'Mermaid'
+      return ReactDOM.createPortal(
+        h('div', {
+          className: 'dshc-lb',
+          ref: overlayRef,
+          role: 'dialog',
+          'aria-modal': 'true',
+          'aria-label': t.preview,
+          onPointerDown: (event) => { if (event.target === event.currentTarget) props.onClose() },
+        },
+          h('div', { className: 'dshc-lb-panel' },
+            h('div', { className: 'dshc-lb-head' },
+              h('span', { className: 'dshc-dot', 'aria-hidden': 'true' }),
+              h('span', { className: 'dshc-lb-title' }, label),
+              props.meta ? h('span', { className: 'dshc-lb-meta', title: props.meta }, props.meta) : null,
+              h('span', { className: 'dshc-lb-hint' }, t.hint),
+              h('div', { className: 'dshc-lb-actions' },
+                h('button', {
+                  type: 'button', className: 'dshc-lb-btn', 'aria-label': t.zoomOut, title: t.zoomOut,
+                  onClick: () => { changeZoom(-0.25) },
+                }, '−'),
+                h('span', { className: 'dshc-lb-zoomlabel' }, Math.round(zoom * 100) + '%'),
+                h('button', {
+                  type: 'button', className: 'dshc-lb-btn', 'aria-label': t.zoomIn, title: t.zoomIn,
+                  onClick: () => { changeZoom(0.25) },
+                }, '+'),
+                h('button', { type: 'button', className: 'dshc-lb-btn', onClick: () => { setZoom(1) } }, t.reset),
+                h('button', {
+                  type: 'button', className: 'dshc-lb-btn dshc-lb-close', ref: closeRef,
+                  onClick: props.onClose, 'aria-label': t.close, title: t.close,
+                }, '×'),
+              ),
+            ),
+            h('div', {
+              className: 'dshc-lb-stage' + (dragging ? ' dshc-dragging' : ''),
+              ref: stageRef,
+              onPointerDown,
+              onPointerMove,
+              onPointerUp: endDrag,
+              onPointerCancel: endDrag,
+              onDragStart: (event) => { event.preventDefault() },
+            },
+              h('div', {
+                className: 'dshc-lb-zoom',
+                style: { zoom: String(zoom) },
+                dangerouslySetInnerHTML: { __html: props.svg },
+              }),
+            ),
+          ),
+        ),
+        document.body,
+      )
+    }
+
     function DiagramFrame(props) {
       const t = props.t
       const [showSource, setShowSource] = React.useState(false)
       const [copied, setCopied] = React.useState(false)
-      const [full, setFull] = React.useState(false)
+      const [preview, setPreview] = React.useState(false)
+      const previewButtonRef = React.useRef(null)
       const copyTimer = React.useRef(0)
       React.useEffect(() => () => { if (copyTimer.current) window.clearTimeout(copyTimer.current) }, [])
-      React.useEffect(() => {
-        const onChange = () => { setFull(document.fullscreenElement === props.frameRef.current) }
-        document.addEventListener('fullscreenchange', onChange)
-        return () => { document.removeEventListener('fullscreenchange', onChange) }
-      }, [props.frameRef])
+      const closePreview = React.useCallback(() => {
+        setPreview(false)
+        if (previewButtonRef.current !== null) previewButtonRef.current.focus()
+      }, [])
       const onCopy = () => {
         copyText(props.code, () => {
           setCopied(true)
@@ -296,15 +442,9 @@ window.__ModuleLoader__.load({
           copyTimer.current = window.setTimeout(() => { setCopied(false) }, 1400)
         })
       }
-      const onFullscreen = () => {
-        const element = props.frameRef.current
-        if (element === null) return
-        if (document.fullscreenElement) { void document.exitFullscreen() }
-        else if (element.requestFullscreen) { void element.requestFullscreen() }
-      }
       const label = props.lang === 'svg' ? 'SVG' : 'Mermaid'
       const title = props.meta && props.meta.trim() !== '' ? props.meta.trim() : ''
-      return h('div', { className: 'dshc-frame', ref: props.frameRef, 'data-dshc-lang': props.lang },
+      const frame = h('div', { className: 'dshc-frame', ref: props.frameRef, 'data-dshc-lang': props.lang },
         h('div', { className: 'dshc-head' },
           h('span', { className: 'dshc-dot', 'aria-hidden': 'true' }),
           h('span', { className: 'dshc-label' }, label),
@@ -316,7 +456,10 @@ window.__ModuleLoader__.load({
               onClick: () => { setShowSource((value) => !value) },
             }, showSource ? t.diagram : t.source),
             h('button', { type: 'button', className: 'dshc-btn', onClick: onCopy }, copied ? t.copied : t.copy),
-            h('button', { type: 'button', className: 'dshc-btn', onClick: onFullscreen }, full ? t.exitFullscreen : t.fullscreen),
+            h('button', {
+              type: 'button', className: 'dshc-btn', ref: previewButtonRef,
+              disabled: !props.previewSvg, onClick: () => { setPreview(true) },
+            }, t.preview),
           ),
         ),
         h('div', { className: 'dshc-body' + (showSource || props.error ? ' dshc-body-source' : '') },
@@ -326,6 +469,10 @@ window.__ModuleLoader__.load({
             : props.children,
         ),
       )
+      const overlay = preview && props.previewSvg
+        ? h(PreviewOverlay, { svg: props.previewSvg, lang: props.lang, meta: title, t, onClose: closePreview })
+        : null
+      return h(React.Fragment, null, frame, overlay)
     }
 
     function createMermaidFence(runtime, configPromise) {
@@ -387,6 +534,7 @@ window.__ModuleLoader__.load({
           frameRef,
           busy: paint.status === 'loading' && paint.previous !== undefined,
           error: paint.status === 'error' ? paint.message : '',
+          previewSvg: paint.status === 'ready' ? paint.svg : (paint.previous || ''),
           children: content,
         })
       }
@@ -416,6 +564,7 @@ window.__ModuleLoader__.load({
           frameRef,
           busy: false,
           error: prepared && prepared.error ? prepared.error : '',
+          previewSvg: prepared && prepared.svg ? prepared.svg : '',
           children: content,
         })
       }

@@ -1,5 +1,5 @@
 /**
- * Host half of dsh-charts.
+ * Host half of dsh-charts (0.1.2: in-app preview lightbox replaces OS fullscreen).
  *
  * Serves the pinned Mermaid UMD build and the effective client config from
  * this plugin's own dependency tree, so the browser bundle stays tiny and the

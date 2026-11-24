@@ -22,6 +22,7 @@ let definition
 globalThis.window.__ModuleLoader__ = { load(value) { definition = value } }
 
 const React = (await import('react')).default
+const ReactDOM = (await import('react-dom')).default
 const { createRoot } = await import('react-dom/client')
 const testUtils = await import('react-dom/test-utils')
 const act = React.act ?? testUtils.act
@@ -31,6 +32,7 @@ await import(clientUrl)
 assert.equal(definition.id, 'dsh-charts')
 const plugin = definition.factory((id) => {
   if (id === 'react') return React
+  if (id === 'react-dom') return ReactDOM
   throw new Error('unexpected module ' + id)
 })
 
@@ -149,6 +151,37 @@ test('streaming fences render the original code block', async () => {
   })
   assert.ok(container.querySelector('pre.md-code-block'))
   assert.equal(container.querySelector('.dshc-frame'), null)
+  await act(async () => { root.unmount() })
+  container.remove()
+})
+
+test('preview opens an in-page lightbox with zoom and closes on Escape', async () => {
+  const SvgFence = registered.get('svg')
+  const { container, root } = setupRoot()
+  const code = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><rect width="20" height="20" fill="teal"/></svg>'
+  await act(async () => {
+    root.render(React.createElement(SvgFence, { lang: 'svg', code, streaming: false, children: null }))
+  })
+  const previewButton = [...container.querySelectorAll('button')].find((button) => button.textContent === '预览')
+  assert.ok(previewButton, 'preview button exists')
+  await act(async () => {
+    previewButton.dispatchEvent(new dom.window.MouseEvent('click', { bubbles: true }))
+  })
+  const overlay = document.querySelector('.dshc-lb')
+  assert.ok(overlay, 'lightbox is portaled into the document body')
+  assert.ok(overlay.querySelector('.dshc-lb-stage svg'), 'lightbox contains the diagram')
+  assert.equal(document.body.style.overflow, 'hidden')
+  const zoomIn = overlay.querySelector('button[aria-label="放大"]')
+  assert.ok(zoomIn, 'zoom control exists')
+  await act(async () => {
+    zoomIn.dispatchEvent(new dom.window.MouseEvent('click', { bubbles: true }))
+  })
+  assert.equal(overlay.querySelector('.dshc-lb-zoomlabel').textContent, '125%')
+  await act(async () => {
+    document.dispatchEvent(new dom.window.KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
+  })
+  assert.equal(document.querySelector('.dshc-lb'), null, 'Escape closes the lightbox')
+  assert.equal(document.body.style.overflow, '')
   await act(async () => { root.unmount() })
   container.remove()
 })
