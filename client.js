@@ -57,45 +57,37 @@ window.__ModuleLoader__.load({
     }
 
     const STYLES = [
-      '.dshc-frame{display:flex;flex-direction:column;margin:10px 0;border:1px solid var(--dsw-alias-border-l1,rgba(128,128,128,.28));border-radius:12px;background:var(--dsw-alias-bg-layer-1,rgba(128,128,128,.07));overflow:hidden}',
-      '.dshc-head{display:flex;align-items:center;gap:8px;padding:6px 8px 6px 12px;font-size:12px;line-height:1.6;color:var(--dsw-alias-label-secondary,#8a8f98);border-bottom:1px solid var(--dsw-alias-border-l1,rgba(128,128,128,.2))}',
-      '.dshc-dot{width:8px;height:8px;border-radius:50%;background:var(--dsw-alias-brand-primary,#4c8dff);flex:none}',
-      '.dshc-label{font-weight:600;color:var(--dsw-alias-label-primary,inherit);letter-spacing:.02em}',
-      '.dshc-title{max-width:45%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;opacity:.72}',
-      '.dshc-busy{opacity:.72}',
-      '.dshc-actions{margin-left:auto;display:flex;gap:2px;flex:none}',
-      '.dshc-btn{border:0;background:transparent;color:inherit;font:inherit;cursor:pointer;padding:3px 8px;border-radius:6px;white-space:nowrap}',
-      '.dshc-btn:hover{background:var(--dsw-alias-bg-layer-2,rgba(128,128,128,.18));color:var(--dsw-alias-label-primary,inherit)}',
-      '.dshc-body{padding:12px;overflow:auto;max-height:min(72vh,760px)}',
-      '.dshc-body-source{padding:0}',
-      '.dshc-svg{display:flex;justify-content:center;align-items:center;min-width:0}',
+      '.dshc-embed{position:relative;display:block;margin:8px 0;cursor:zoom-in;outline:none;border:0;background:none}',
+      '.dshc-embed:focus-visible{outline:2px solid var(--dsw-alias-brand-primary,#4c8dff);outline-offset:4px;border-radius:8px}',
+      '.dshc-embed:hover .dshc-svg{opacity:.97}',
+      '.dshc-svg{display:flex;justify-content:center;align-items:center;min-width:0;max-width:100%}',
       '.dshc-svg svg{max-width:100%;height:auto}',
       '.dshc-refreshing{opacity:.55}',
-      '.dshc-placeholder{display:flex;align-items:center;justify-content:center;min-height:72px;padding:18px;font-size:12px;color:var(--dsw-alias-label-secondary,#8a8f98)}',
-      '.dshc-error{margin:0;font-size:12px;color:var(--dsw-alias-state-error-primary,#e5484d);word-break:break-word}',
-      '.dshc-body-source .dshc-error{padding:10px 12px 0}',
-      '.dshc-code{margin:0;padding:10px 12px;overflow:auto;max-height:60vh;font-size:12px;line-height:1.55;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre;tab-size:2}',
-      '.dshc-btn:disabled{opacity:.4;cursor:default}',
-      '.dshc-lb{position:fixed;inset:0;z-index:2147483000;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(0,0,0,.74);backdrop-filter:blur(3px);animation:dshc-fade .16s ease-out;overscroll-behavior:contain}',
-      '.dshc-lb-panel{display:flex;flex-direction:column;width:min(1200px,94vw);max-height:90vh;border:1px solid var(--dsw-alias-border-l1,rgba(255,255,255,.16));border-radius:14px;background:var(--dsw-alias-bg-overlay,#1b1f27);box-shadow:0 24px 80px rgba(0,0,0,.55);overflow:hidden;animation:dshc-pop .18s ease-out}',
-      '.dshc-lb-head{display:flex;align-items:center;gap:8px;padding:9px 10px 9px 12px;font-size:12px;line-height:1.6;color:var(--dsw-alias-label-secondary,#9aa1ab);border-bottom:1px solid var(--dsw-alias-border-l1,rgba(128,128,128,.22));flex:none}',
-      '.dshc-lb-title{font-weight:600;color:var(--dsw-alias-label-primary,inherit);letter-spacing:.02em}',
-      '.dshc-lb-meta{max-width:30%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;opacity:.7}',
-      '.dshc-lb-hint{margin-left:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;opacity:.55}',
-      '.dshc-lb-actions{margin-left:auto;display:flex;align-items:center;gap:2px;flex:none}',
-      '.dshc-lb-btn{border:0;background:transparent;color:inherit;font:inherit;cursor:pointer;padding:3px 8px;border-radius:6px;white-space:nowrap}',
-      '.dshc-lb-btn:hover{background:var(--dsw-alias-bg-layer-2,rgba(128,128,128,.2));color:var(--dsw-alias-label-primary,inherit)}',
-      '.dshc-lb-btn:focus-visible{outline:2px solid var(--dsw-alias-brand-primary,#4c8dff);outline-offset:1px}',
+      '.dshc-placeholder{display:flex;align-items:center;justify-content:center;min-height:64px;font-size:12px;color:var(--dsw-alias-label-secondary,#8a8f98)}',
+      '.dshc-embed-failed{cursor:default;margin:8px 0;padding:10px 12px;border:1px solid var(--dsw-alias-border-l1,rgba(128,128,128,.28));border-radius:10px;background:var(--dsw-alias-bg-layer-1,rgba(128,128,128,.06))}',
+      '.dshc-error{margin:0 0 8px;font-size:12px;color:var(--dsw-alias-state-error-primary,#e5484d);word-break:break-word}',
+      '.dshc-code{margin:0;padding:10px 0 0;overflow:auto;max-height:50vh;font-size:12px;line-height:1.55;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre;tab-size:2}',
+      '.dshc-lb{position:fixed;inset:0;z-index:2147483000;background:rgba(0,0,0,.82);backdrop-filter:blur(4px);animation:dshc-fade .16s ease-out;overscroll-behavior:contain;outline:none}',
+      '.dshc-lb-top{position:absolute;top:0;left:0;right:0;z-index:3;display:flex;align-items:center;gap:10px;padding:14px 18px;color:#cfd6df;background:linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,0));pointer-events:auto}',
+      '.dshc-lb-title{font-weight:600;color:#f2f5f8;letter-spacing:.02em;font-size:13px}',
+      '.dshc-lb-meta{max-width:34%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;opacity:.65;font-size:12px}',
+      '.dshc-lb-hint{margin-left:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;opacity:.45;font-size:12px}',
+      '.dshc-lb-actions{margin-left:auto;display:flex;align-items:center;gap:4px;pointer-events:auto}',
+      '.dshc-lb-btn{border:0;background:transparent;color:inherit;font:inherit;font-size:12px;cursor:pointer;padding:5px 10px;border-radius:8px;white-space:nowrap}',
+      '.dshc-lb-btn:hover{background:rgba(255,255,255,.12);color:#fff}',
+      '.dshc-lb-btn:focus-visible{outline:2px solid #7cb2ff;outline-offset:1px}',
       '.dshc-lb-btn:focus:not(:focus-visible){outline:none}',
-      '.dshc-lb-zoomlabel{min-width:46px;text-align:center;font-variant-numeric:tabular-nums;opacity:.8}',
-      '.dshc-lb-close{font-size:18px;line-height:1;padding:2px 9px 4px}',
-      '.dshc-lb-stage{flex:1 1 auto;min-height:0;max-height:calc(90vh - 48px);overflow:auto;padding:22px;cursor:grab;overscroll-behavior:contain;background:var(--dsw-alias-bg-base,rgba(0,0,0,.18))}',
+      '.dshc-lb-close{font-size:20px;line-height:1;padding:2px 10px 5px}',
+      '.dshc-lb-stage{position:absolute;inset:0;z-index:1;overflow:auto;display:flex;padding:70px 28px 100px;overscroll-behavior:contain}',
       '.dshc-lb-stage.dshc-dragging{cursor:grabbing;user-select:none}',
-      '.dshc-lb-zoom{display:block;width:100%;text-align:center}',
-      '.dshc-lb-zoom svg{display:inline-block;max-width:100%;height:auto}',
+      '.dshc-lb-zoom{margin:auto;display:block;width:100%;text-align:center;pointer-events:none}',
+      '.dshc-lb-zoom svg{display:inline-block;max-width:100%;height:auto;pointer-events:auto;cursor:grab}',
+      '.dshc-lb-zoom-bar{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);z-index:3;display:flex;align-items:center;gap:2px;padding:4px 6px;border-radius:999px;background:rgba(24,28,34,.88);color:#e8edf3;box-shadow:0 10px 36px rgba(0,0,0,.5);backdrop-filter:blur(10px)}',
+      '.dshc-lb-zoomlabel{min-width:50px;text-align:center;font-size:12px;font-variant-numeric:tabular-nums;opacity:.85}',
+      '.dshc-lb-source{position:absolute;top:62px;right:22px;bottom:22px;left:22px;z-index:2;overflow:auto;display:flex;justify-content:center;padding:6px 0 16px}',
+      '.dshc-lb-source pre{width:min(1000px,100%);margin:0;padding:18px;border-radius:12px;background:rgba(14,16,20,.86);color:#e6edf3;font-size:12px;line-height:1.6;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre;tab-size:2}',
       '@keyframes dshc-fade{from{opacity:0}to{opacity:1}}',
-      '@keyframes dshc-pop{from{opacity:0;transform:scale(.985)}to{opacity:1;transform:none}}',
-      '@media (max-width:720px){.dshc-lb{padding:10px}.dshc-lb-panel{width:96vw}.dshc-lb-hint{display:none}}',
+      '@media (max-width:720px){.dshc-lb-hint{display:none}.dshc-lb-stage{padding:64px 12px 92px}.dshc-lb-source{top:56px;right:10px;left:10px}}',
     ].join('\n')
 
     let renderSeq = 0
@@ -307,17 +299,20 @@ window.__ModuleLoader__.load({
       const t = props.t
       const [zoom, setZoom] = React.useState(1)
       const [dragging, setDragging] = React.useState(false)
+      const [showSource, setShowSource] = React.useState(false)
+      const [copied, setCopied] = React.useState(false)
       const overlayRef = React.useRef(null)
       const stageRef = React.useRef(null)
-      const closeRef = React.useRef(null)
       const dragRef = React.useRef(null)
+      const copyTimer = React.useRef(0)
 
+      React.useEffect(() => () => { if (copyTimer.current) window.clearTimeout(copyTimer.current) }, [])
       React.useEffect(() => {
         const previous = document.body.style.overflow
         document.body.style.overflow = 'hidden'
         const onKey = (event) => { if (event.key === 'Escape') props.onClose() }
         document.addEventListener('keydown', onKey)
-        if (closeRef.current !== null) closeRef.current.focus()
+        if (overlayRef.current !== null) overlayRef.current.focus()
         return () => {
           document.removeEventListener('keydown', onKey)
           document.body.style.overflow = previous
@@ -335,7 +330,11 @@ window.__ModuleLoader__.load({
             return Math.round(Math.min(5, Math.max(0.5, next)) * 100) / 100
           })
         }
-        const holdBackground = (event) => { event.preventDefault() }
+        const holdBackground = (event) => {
+          const target = event.target
+          if (target !== null && typeof target.closest === 'function' && target.closest('.dshc-lb-source') !== null) return
+          event.preventDefault()
+        }
         stage.addEventListener('wheel', zoomByWheel, { passive: false })
         overlay.addEventListener('wheel', holdBackground, { passive: false })
         return () => {
@@ -345,6 +344,7 @@ window.__ModuleLoader__.load({
       }, [])
 
       const onPointerDown = (event) => {
+        if (event.target === event.currentTarget) { props.onClose(); return }
         if (event.pointerType !== 'mouse' || event.button !== 0) return
         const stage = stageRef.current
         if (stage === null) return
@@ -369,72 +369,6 @@ window.__ModuleLoader__.load({
       const changeZoom = (delta) => {
         setZoom((value) => Math.round(Math.min(5, Math.max(0.5, value + delta)) * 100) / 100)
       }
-      const label = props.lang === 'svg' ? 'SVG' : 'Mermaid'
-      return ReactDOM.createPortal(
-        h('div', {
-          className: 'dshc-lb',
-          ref: overlayRef,
-          role: 'dialog',
-          'aria-modal': 'true',
-          'aria-label': t.preview,
-          onPointerDown: (event) => { if (event.target === event.currentTarget) props.onClose() },
-        },
-          h('div', { className: 'dshc-lb-panel' },
-            h('div', { className: 'dshc-lb-head' },
-              h('span', { className: 'dshc-dot', 'aria-hidden': 'true' }),
-              h('span', { className: 'dshc-lb-title' }, label),
-              props.meta ? h('span', { className: 'dshc-lb-meta', title: props.meta }, props.meta) : null,
-              h('span', { className: 'dshc-lb-hint' }, t.hint),
-              h('div', { className: 'dshc-lb-actions' },
-                h('button', {
-                  type: 'button', className: 'dshc-lb-btn', 'aria-label': t.zoomOut, title: t.zoomOut,
-                  onClick: () => { changeZoom(-0.25) },
-                }, '−'),
-                h('span', { className: 'dshc-lb-zoomlabel' }, Math.round(zoom * 100) + '%'),
-                h('button', {
-                  type: 'button', className: 'dshc-lb-btn', 'aria-label': t.zoomIn, title: t.zoomIn,
-                  onClick: () => { changeZoom(0.25) },
-                }, '+'),
-                h('button', { type: 'button', className: 'dshc-lb-btn', onClick: () => { setZoom(1) } }, t.reset),
-                h('button', {
-                  type: 'button', className: 'dshc-lb-btn dshc-lb-close', ref: closeRef,
-                  onClick: props.onClose, 'aria-label': t.close, title: t.close,
-                }, '×'),
-              ),
-            ),
-            h('div', {
-              className: 'dshc-lb-stage' + (dragging ? ' dshc-dragging' : ''),
-              ref: stageRef,
-              onPointerDown,
-              onPointerMove,
-              onPointerUp: endDrag,
-              onPointerCancel: endDrag,
-              onDragStart: (event) => { event.preventDefault() },
-            },
-              h('div', {
-                className: 'dshc-lb-zoom',
-                style: { zoom: String(zoom) },
-                dangerouslySetInnerHTML: { __html: props.svg },
-              }),
-            ),
-          ),
-        ),
-        document.body,
-      )
-    }
-
-    function DiagramFrame(props) {
-      const t = props.t
-      const [showSource, setShowSource] = React.useState(false)
-      const [copied, setCopied] = React.useState(false)
-      const [preview, setPreview] = React.useState(false)
-      const previewButtonRef = React.useRef(null)
-      const copyTimer = React.useRef(0)
-      React.useEffect(() => () => { if (copyTimer.current) window.clearTimeout(copyTimer.current) }, [])
-      const closePreview = React.useCallback(() => {
-        setPreview(false)
-        if (previewButtonRef.current !== null) previewButtonRef.current.focus()
-      }, [])
       const onCopy = () => {
         copyText(props.code, () => {
           setCopied(true)
@@ -443,36 +377,105 @@ window.__ModuleLoader__.load({
         })
       }
       const label = props.lang === 'svg' ? 'SVG' : 'Mermaid'
-      const title = props.meta && props.meta.trim() !== '' ? props.meta.trim() : ''
-      const frame = h('div', { className: 'dshc-frame', ref: props.frameRef, 'data-dshc-lang': props.lang },
-        h('div', { className: 'dshc-head' },
-          h('span', { className: 'dshc-dot', 'aria-hidden': 'true' }),
-          h('span', { className: 'dshc-label' }, label),
-          title ? h('span', { className: 'dshc-title', title }, title) : null,
-          props.busy ? h('span', { className: 'dshc-busy' }, t.loading) : null,
-          h('div', { className: 'dshc-actions' },
+      return ReactDOM.createPortal(
+        h('div', {
+          className: 'dshc-lb',
+          ref: overlayRef,
+          role: 'dialog',
+          'aria-modal': 'true',
+          'aria-label': t.preview,
+          tabIndex: -1,
+          onPointerDown: (event) => { if (event.target === event.currentTarget) props.onClose() },
+        },
+          h('div', { className: 'dshc-lb-top' },
+            h('span', { className: 'dshc-lb-title' }, label),
+            props.meta ? h('span', { className: 'dshc-lb-meta', title: props.meta }, props.meta) : null,
+            h('span', { className: 'dshc-lb-hint' }, t.hint),
+            h('div', { className: 'dshc-lb-actions' },
+              h('button', {
+                type: 'button', className: 'dshc-lb-btn', 'aria-pressed': showSource ? 'true' : 'false',
+                onClick: () => { setShowSource((value) => !value) },
+              }, showSource ? t.diagram : t.source),
+              h('button', { type: 'button', className: 'dshc-lb-btn', onClick: onCopy }, copied ? t.copied : t.copy),
+              h('button', {
+                type: 'button', className: 'dshc-lb-btn dshc-lb-close',
+                onClick: props.onClose, 'aria-label': t.close, title: t.close,
+              }, '×'),
+            ),
+          ),
+          showSource
+            ? h('div', { className: 'dshc-lb-source' },
+                h('pre', null, h('code', null, props.code)),
+              )
+            : h('div', {
+                className: 'dshc-lb-stage' + (dragging ? ' dshc-dragging' : ''),
+                ref: stageRef,
+                onPointerDown,
+                onPointerMove,
+                onPointerUp: endDrag,
+                onPointerCancel: endDrag,
+                onDragStart: (event) => { event.preventDefault() },
+              },
+                h('div', {
+                  className: 'dshc-lb-zoom',
+                  style: { zoom: String(zoom) },
+                  dangerouslySetInnerHTML: { __html: props.svg },
+                }),
+              ),
+          showSource ? null : h('div', { className: 'dshc-lb-zoom-bar' },
             h('button', {
-              type: 'button', className: 'dshc-btn', 'aria-pressed': showSource ? 'true' : 'false',
-              onClick: () => { setShowSource((value) => !value) },
-            }, showSource ? t.diagram : t.source),
-            h('button', { type: 'button', className: 'dshc-btn', onClick: onCopy }, copied ? t.copied : t.copy),
+              type: 'button', className: 'dshc-lb-btn', 'aria-label': t.zoomOut, title: t.zoomOut,
+              onClick: () => { changeZoom(-0.25) },
+            }, '−'),
+            h('span', { className: 'dshc-lb-zoomlabel' }, Math.round(zoom * 100) + '%'),
             h('button', {
-              type: 'button', className: 'dshc-btn', ref: previewButtonRef,
-              disabled: !props.previewSvg, onClick: () => { setPreview(true) },
-            }, t.preview),
+              type: 'button', className: 'dshc-lb-btn', 'aria-label': t.zoomIn, title: t.zoomIn,
+              onClick: () => { changeZoom(0.25) },
+            }, '+'),
+            h('button', { type: 'button', className: 'dshc-lb-btn', onClick: () => { setZoom(1) } }, t.reset),
           ),
         ),
-        h('div', { className: 'dshc-body' + (showSource || props.error ? ' dshc-body-source' : '') },
-          props.error ? h('div', { className: 'dshc-error' }, t.error + ': ' + props.error) : null,
-          showSource || props.error
-            ? h('pre', { className: 'dshc-code' }, h('code', null, props.code))
-            : props.children,
-        ),
+        document.body,
       )
-      const overlay = preview && props.previewSvg
-        ? h(PreviewOverlay, { svg: props.previewSvg, lang: props.lang, meta: title, t, onClose: closePreview })
-        : null
-      return h(React.Fragment, null, frame, overlay)
+    }
+
+    function DiagramEmbed(props) {
+      const t = props.t
+      const [preview, setPreview] = React.useState(false)
+      const closePreview = React.useCallback(() => {
+        setPreview(false)
+        const node = props.frameRef.current
+        if (node !== null) node.focus()
+      }, [props.frameRef])
+      const canPreview = Boolean(props.previewSvg)
+      const title = props.meta && props.meta.trim() !== '' ? props.meta.trim() : ''
+      const open = () => { if (canPreview) setPreview(true) }
+      const onKeyDown = (event) => {
+        if (!canPreview) return
+        if (event.key === 'Enter' || event.key === ' ' || event.key === 'Spacebar') {
+          event.preventDefault()
+          setPreview(true)
+        }
+      }
+      const body = props.error
+        ? h('div', { className: 'dshc-embed dshc-embed-failed', ref: props.frameRef },
+            h('div', { className: 'dshc-error' }, t.error + ': ' + props.error),
+            h('pre', { className: 'dshc-code' }, h('code', null, props.code)),
+          )
+        : h('div', {
+            className: 'dshc-embed',
+            ref: props.frameRef,
+            role: canPreview ? 'button' : undefined,
+            tabIndex: canPreview ? 0 : undefined,
+            'aria-label': canPreview ? t.preview : undefined,
+            title: canPreview ? t.preview : undefined,
+            onClick: canPreview ? open : undefined,
+            onKeyDown: canPreview ? onKeyDown : undefined,
+            'data-dshc-lang': props.lang,
+          }, props.children)
+      return h(React.Fragment, null, body, preview && props.previewSvg
+        ? h(PreviewOverlay, { svg: props.previewSvg, code: props.code, lang: props.lang, meta: title, t, onClose: closePreview })
+        : null)
     }
 
     function createMermaidFence(runtime, configPromise) {
@@ -526,13 +529,12 @@ window.__ModuleLoader__.load({
         } else {
           content = h('div', { className: 'dshc-placeholder' }, t.loading)
         }
-        return h(DiagramFrame, {
+        return h(DiagramEmbed, {
           lang: props.lang,
           code,
           meta: props.meta,
           t,
           frameRef,
-          busy: paint.status === 'loading' && paint.previous !== undefined,
           error: paint.status === 'error' ? paint.message : '',
           previewSvg: paint.status === 'ready' ? paint.svg : (paint.previous || ''),
           children: content,
@@ -556,13 +558,12 @@ window.__ModuleLoader__.load({
         const content = prepared && prepared.svg
           ? h('div', { className: 'dshc-svg', dangerouslySetInnerHTML: { __html: prepared.svg } })
           : h('div', { className: 'dshc-placeholder' }, t.error)
-        return h(DiagramFrame, {
+        return h(DiagramEmbed, {
           lang: 'svg',
           code,
           meta: props.meta,
           t,
           frameRef,
-          busy: false,
           error: prepared && prepared.error ? prepared.error : '',
           previewSvg: prepared && prepared.svg ? prepared.svg : '',
           children: content,

@@ -103,27 +103,50 @@ function setupRoot() {
   return { container, root }
 }
 
-test('svg fence renders the sanitized svg and toggles source', async () => {
+function click(element) {
+  element.dispatchEvent(new dom.window.MouseEvent('click', { bubbles: true }))
+}
+
+async function openPreview(container) {
+  const embed = container.querySelector('.dshc-embed')
+  assert.ok(embed, 'inline diagram embed exists')
+  await act(async () => { click(embed) })
+  return document.querySelector('.dshc-lb')
+}
+
+test('svg fence renders inline without a frame and opens preview on click', async () => {
   const SvgFence = registered.get('svg')
   const { container, root } = setupRoot()
   const code = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><rect width="20" height="20" fill="teal"/></svg>'
   await act(async () => {
     root.render(React.createElement(SvgFence, { lang: 'svg', code, streaming: false, children: null }))
   })
-  assert.ok(container.querySelector('.dshc-svg svg'), 'svg is rendered inline')
-  assert.ok(container.querySelector('.dshc-label').textContent === 'SVG')
+  assert.ok(container.querySelector('.dshc-embed .dshc-svg svg'), 'svg is rendered inline')
+  assert.equal(container.querySelector('.dshc-frame'), null, 'no framed header remains')
+  assert.equal(container.querySelector('.dshc-embed').getAttribute('role'), 'button')
 
-  const sourceButton = [...container.querySelectorAll('button')].find((button) => button.textContent === '源码')
-  assert.ok(sourceButton, 'source toggle exists')
+  const overlay = await openPreview(container)
+  assert.ok(overlay, 'clicking the diagram opens the overlay')
+  assert.ok(overlay.querySelector('.dshc-lb-stage svg'), 'overlay contains the diagram')
+
+  const sourceButton = [...overlay.querySelectorAll('button')].find((button) => button.textContent === '源码')
+  assert.ok(sourceButton, 'source toggle exists in the overlay')
+  await act(async () => { click(sourceButton) })
+  assert.equal(overlay.querySelector('.dshc-lb-source pre').textContent, code)
+  assert.equal(overlay.querySelector('.dshc-lb-stage'), null)
+  const diagramButton = [...overlay.querySelectorAll('button')].find((button) => button.textContent === '图表')
+  await act(async () => { click(diagramButton) })
+  assert.ok(overlay.querySelector('.dshc-lb-stage svg'))
+
   await act(async () => {
-    sourceButton.dispatchEvent(new dom.window.MouseEvent('click', { bubbles: true }))
+    document.dispatchEvent(new dom.window.KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
   })
-  assert.equal(container.querySelector('pre.dshc-code').textContent, code)
+  assert.equal(document.querySelector('.dshc-lb'), null, 'Escape closes the overlay')
   await act(async () => { root.unmount() })
   container.remove()
 })
 
-test('mermaid fence renders a diagram and keeps code available', async () => {
+test('mermaid fence renders a diagram and opens the overlay', async () => {
   const MermaidFence = registered.get('mermaid')
   const { container, root } = setupRoot()
   const code = 'flowchart TD\n  A --> B'
@@ -131,13 +154,13 @@ test('mermaid fence renders a diagram and keeps code available', async () => {
     root.render(React.createElement(MermaidFence, { lang: 'mermaid', code, streaming: false, children: null }))
   })
   await act(async () => { await new Promise((resolve) => setTimeout(resolve, 30)) })
-  assert.ok(container.querySelector('.dshc-svg svg'), 'mermaid svg is rendered inline')
-  assert.ok(container.querySelector('.dshc-label').textContent === 'Mermaid')
-  const sourceButton = [...container.querySelectorAll('button')].find((button) => button.textContent === '源码')
+  assert.ok(container.querySelector('.dshc-embed .dshc-svg svg'), 'mermaid svg is rendered inline')
+  const overlay = await openPreview(container)
+  assert.ok(overlay, 'overlay opens for mermaid')
+  assert.ok(overlay.querySelector('.dshc-lb-stage svg'))
   await act(async () => {
-    sourceButton.dispatchEvent(new dom.window.MouseEvent('click', { bubbles: true }))
+    document.dispatchEvent(new dom.window.KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
   })
-  assert.equal(container.querySelector('pre.dshc-code').textContent, code)
   await act(async () => { root.unmount() })
   container.remove()
 })
@@ -155,32 +178,24 @@ test('streaming fences render the original code block', async () => {
   container.remove()
 })
 
-test('preview opens an in-page lightbox with zoom and closes on Escape', async () => {
+test('preview supports zoom and closes on Escape', async () => {
   const SvgFence = registered.get('svg')
   const { container, root } = setupRoot()
   const code = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><rect width="20" height="20" fill="teal"/></svg>'
   await act(async () => {
     root.render(React.createElement(SvgFence, { lang: 'svg', code, streaming: false, children: null }))
   })
-  const previewButton = [...container.querySelectorAll('button')].find((button) => button.textContent === '预览')
-  assert.ok(previewButton, 'preview button exists')
-  await act(async () => {
-    previewButton.dispatchEvent(new dom.window.MouseEvent('click', { bubbles: true }))
-  })
-  const overlay = document.querySelector('.dshc-lb')
-  assert.ok(overlay, 'lightbox is portaled into the document body')
-  assert.ok(overlay.querySelector('.dshc-lb-stage svg'), 'lightbox contains the diagram')
+  const overlay = await openPreview(container)
+  assert.ok(overlay, 'overlay is open')
   assert.equal(document.body.style.overflow, 'hidden')
   const zoomIn = overlay.querySelector('button[aria-label="放大"]')
   assert.ok(zoomIn, 'zoom control exists')
-  await act(async () => {
-    zoomIn.dispatchEvent(new dom.window.MouseEvent('click', { bubbles: true }))
-  })
+  await act(async () => { click(zoomIn) })
   assert.equal(overlay.querySelector('.dshc-lb-zoomlabel').textContent, '125%')
   await act(async () => {
     document.dispatchEvent(new dom.window.KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
   })
-  assert.equal(document.querySelector('.dshc-lb'), null, 'Escape closes the lightbox')
+  assert.equal(document.querySelector('.dshc-lb'), null, 'Escape closes the overlay')
   assert.equal(document.body.style.overflow, '')
   await act(async () => { root.unmount() })
   container.remove()
