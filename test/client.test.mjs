@@ -200,3 +200,33 @@ test('preview supports zoom and closes on Escape', async () => {
   await act(async () => { root.unmount() })
   container.remove()
 })
+test('inline diagram embeds are never height-capped or clipped', async () => {
+  // Regression: 0.1.2 wrapped every diagram in a framed box capped at
+  // min(72vh, 760px) with its own scroll area. On macOS the overlay scrollbar
+  // is invisible, so a tall flowchart looked cut off / covered. Inline embeds
+  // must grow with the diagram instead.
+  const style = document.querySelector('style[data-dsh-charts]')
+  assert.ok(style, 'styles are mounted')
+  const cssText = style.textContent
+  for (const selector of ['.dshc-embed', '.dshc-svg']) {
+    const blockPattern = new RegExp(selector.replace(/\./g, '\\.') + '(?![\\w-])\\{([^}]*)\\}', 'g')
+    const blocks = [...cssText.matchAll(blockPattern)].map((match) => match[1])
+    assert.ok(blocks.length > 0, selector + ' has a rule')
+    for (const block of blocks) {
+      assert.doesNotMatch(block, /max-height/, selector + ' must not cap the diagram height')
+      assert.doesNotMatch(block, /overflow\s*:\s*hidden/, selector + ' must not clip the diagram')
+    }
+  }
+
+  const MermaidFence = registered.get('mermaid')
+  const { container, root } = setupRoot()
+  await act(async () => {
+    root.render(React.createElement(MermaidFence, { lang: 'mermaid', code: 'flowchart TD\n  A --> B', streaming: false, children: null }))
+  })
+  await act(async () => { await new Promise((resolve) => setTimeout(resolve, 30)) })
+  const embed = container.querySelector('.dshc-embed')
+  assert.ok(embed, 'diagram is embedded inline')
+  assert.equal(embed.getAttribute('style'), null, 'no inline height/overflow is applied to the embed')
+  await act(async () => { root.unmount() })
+  container.remove()
+})
