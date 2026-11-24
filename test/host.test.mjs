@@ -6,6 +6,7 @@ function setup(rawConfig) {
   const routes = []
   const ctx = {
     effect(callback) { callback(); return () => {} },
+    get() { return undefined },
     webServer: { register(route) { routes.push(route); return () => {} } },
   }
   apply(ctx, rawConfig)
@@ -60,4 +61,21 @@ test('serves the mermaid bundle and refuses other files', async () => {
   const traversal = mockResponse()
   await prefix.handler({ url: DIST_PREFIX + '/..%2F..%2Fpackage.json' }, traversal)
   assert.equal(traversal.statusCode, 404)
+})
+
+test('contributes system prompt guidance when the service exists', () => {
+  const sections = []
+  const ctx = {
+    effect(callback) { callback(); return () => {} },
+    get(name) {
+      if (name !== 'systemPrompt') return undefined
+      return { section(options) { sections.push(options); return () => {} } }
+    },
+    webServer: { register() { return () => {} } },
+  }
+  apply(ctx, undefined)
+  assert.equal(sections.length, 1)
+  assert.equal(sections[0].name, 'dsh-charts')
+  assert.match(sections[0].text, /mermaid fences/)
+  assert.match(sections[0].text, /Do not create image files/)
 })

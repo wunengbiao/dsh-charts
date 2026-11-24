@@ -1,6 +1,6 @@
 {
   "name": "dsh-charts",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "DSH 插件：在会话中把 mermaid 与 svg 代码围栏直接渲染成图表，不生成文件、不转 PNG。DeepSeek Harness plugin that renders mermaid and svg fences inline in Web conversations.",
   "type": "module",
   "main": "./index.js",

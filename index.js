@@ -151,14 +151,15 @@ export function apply(ctx, rawConfig) {
   // Ask every agent to answer diagram requests with a renderable fence instead
   // of writing an image file or converting one to PNG. Optional service: the
   // plugin still works when a deployment composes no system prompt.
-  if (ctx.systemPrompt !== undefined) {
+  const systemPrompt = ctx.get('systemPrompt')
+  if (systemPrompt !== undefined) {
     const guidance = [
       'When the user asks for a diagram, chart, flow chart, sequence diagram, mind map, timeline, or any visual explanation, write it as a fenced code block in your reply:',
       '- mermaid fences for flowcharts, sequence diagrams, class diagrams, state diagrams, pie charts, xychart-beta bar/line charts, gantt, timeline, mindmap, quadrant, sankey, and treemap.',
       '- svg fences for a hand-written SVG, including custom statistical charts that mermaid cannot express.',
       'The Web conversation renders these fences inline as diagrams. Do not create image files, do not convert diagrams to PNG, and do not present a file unless the user explicitly asks for a downloadable file.',
     ].join('\n')
-    ctx.effect(() => ctx.systemPrompt.section({
+    ctx.effect(() => systemPrompt.section({
       name: 'dsh-charts',
       order: 850,
       text: guidance,
